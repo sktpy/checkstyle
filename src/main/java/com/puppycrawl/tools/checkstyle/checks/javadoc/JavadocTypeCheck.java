@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.puppycrawl.tools.checkstyle.StatelessCheck;
@@ -188,13 +187,15 @@ public class JavadocTypeCheck
     /** Space literal. */
     private static final String SPACE = " ";
 
-    /** Pattern to match type name within angle brackets in javadoc param tag. */
-    private static final Pattern TYPE_NAME_IN_JAVADOC_TAG =
-            Pattern.compile("\\s*<([^>]+)>.*");
+    /** Empty string literal. */
+    private static final String EMPTY_STRING = "";
 
     /** Pattern to split type name field in javadoc param tag. */
     private static final Pattern TYPE_NAME_IN_JAVADOC_TAG_SPLITTER =
             Pattern.compile("\\s+");
+
+    /** Pattern to match angle brackets in javadoc param tag name. */
+    private static final Pattern ANGLE_BRACKETS = Pattern.compile("[<>]");
 
     /** Specify the visibility scope where Javadoc comments are checked. */
     private Scope scope = Scope.PRIVATE;
@@ -494,16 +495,9 @@ public class JavadocTypeCheck
      * @return extracts type parameter name from tag
      */
     private static String extractParamNameFromTag(JavadocTag tag) {
-        final String typeParamName;
-        final Matcher matchInAngleBrackets =
-                TYPE_NAME_IN_JAVADOC_TAG.matcher(tag.getFirstArg());
-        if (matchInAngleBrackets.find()) {
-            typeParamName = matchInAngleBrackets.group(1).trim();
-        }
-        else {
-            typeParamName = TYPE_NAME_IN_JAVADOC_TAG_SPLITTER.split(tag.getFirstArg())[0];
-        }
-        return typeParamName;
+        final String tagName = tag.getFirstArg().split(SPACE)[0];
+
+        return ANGLE_BRACKETS.matcher(tagName).replaceAll(EMPTY_STRING);
     }
 
     /**
