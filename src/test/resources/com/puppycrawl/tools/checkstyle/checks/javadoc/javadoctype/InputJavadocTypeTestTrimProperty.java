@@ -16,7 +16,7 @@ package com.puppycrawl.tools.checkstyle.checks.javadoc.javadoctype;
 
 /**
  * Some explanation.
- * @param < A  > A type param
+ * @param < A  > A type param // violation 'Unused @param tag for '<'.'
  * @param <B1> Another type param
  * @param <D123> The wrong type param   // violation 'Unused @param tag for '<D123>'.'
  * @author Nobody
